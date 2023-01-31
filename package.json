@@ -1,0 +1,30 @@
+{
+  "name": "merkle-tree-generator",
+  "version": "1.0.0",
+  "description": "Merkle tree generator",
+  "main": "merkle_tree.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IFalimendikov/Merkle-Tree-Generator.git"
+  },
+  "keywords": [
+    "merkle",
+    "tree",
+    "blockchain",
+    "whitelist"
+  ],
+  "author": "Ivan Falimendikov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IFalimendikov/Merkle-Tree-Generator/issues"
+  },
+  "homepage": "https://github.com/IFalimendikov/Merkle-Tree-Generator#readme",
+  "dependencies": {
+    "@openzeppelin/merkle-tree": "^1.0.2",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.3.9"
+  }
+}
