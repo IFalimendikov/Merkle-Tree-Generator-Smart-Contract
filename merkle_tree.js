@@ -1,17 +1,13 @@
-import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
-import fs from "fs";
+const { MerkleTree, default: MerkleTree } = require('merkletreejs');
+const keccak256 = require("keccak256");
+
+let whitelistedAddresses = [
+  "",
+  ""
+]
 
 
-const values = [
-  ["0x1111111111111111111111111111111111111111", "5000000000000000000"],
-  ["0x2222222222222222222222222222222222222222", "2500000000000000000"]
-];
+const leafNodes = whitelistedAddresses.map(addr => keccak256(addr));
+const MerkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true});
 
-
-const tree = StandardMerkleTree.of(values, ["address", "uint256"]);
-
-
-console.log('Merkle Root:', tree.root);
-
-
-fs.writeFileSync("tree.json", JSON.stringify(tree.dump()));
+const rootHash = MerkleTree.getRoot();
