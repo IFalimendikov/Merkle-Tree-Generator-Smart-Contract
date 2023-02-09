@@ -24,6 +24,13 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
 
     constructor() ERC721A("Your Collection Name", "YCN") {}
 
+
+    modifier merkleProof(bytes32[] memory _proof, bytes32 _root) {
+        require(
+            MerkleProof.verify(_proof, _root, keccak256(abi.encodePacked(msg,sender)), "Address is not whitelisted!");
+            _;
+        )
+    }
     
     modifier mintActiveCompliance(uint256 _count) {
         require(mintActive, "Mint is not active!");
@@ -51,6 +58,10 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
+    function setWhitelistMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+        merkleRoot = _merkleRoot;
+    }
+//////////////////////
     function mintFree(
         uint256 _count
     )
@@ -68,7 +79,7 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
 
         _safeMint(msg.sender, _count);
     }
-
+//////////////////////
     function mint(
         uint256 _count
     )
@@ -83,6 +94,20 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
     {
         require(msg.sender == tx.origin, "contracts can't mint");
         _safeMint(msg.sender, _count);
+    }
+//////////////////////
+    function mintWhitelist(bytes32[] calldata _merkleProof)
+        public
+        payable
+        merkleProof(_merkleProof, merkleRoot)
+        nonReentrant
+        mintActiveCompliance(_count)
+        supplyCompliance(_count)
+        mintLimitCompliance(_count)
+        mintPriceCompliance(_count)
+    {
+        require(msg.sender == tx.origin, "contracts can't mint");
+        _safeMint(msg.sender, supply + 1);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
