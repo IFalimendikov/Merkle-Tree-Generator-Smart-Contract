@@ -96,7 +96,7 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
         _safeMint(msg.sender, _count);
     }
 //////////////////////
-    function mintWhitelist(bytes32[] calldata _merkleProof)
+    function mintWhitelist(bytes32[] calldata _merkleProof, uint256 _count)
         public
         payable
         merkleProof(_merkleProof, merkleRoot)
@@ -107,7 +107,7 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
         mintPriceCompliance(_count)
     {
         require(msg.sender == tx.origin, "contracts can't mint");
-        _safeMint(msg.sender, supply + 1);
+        _safeMint(msg.sender, su);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
