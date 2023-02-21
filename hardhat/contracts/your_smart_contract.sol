@@ -25,7 +25,7 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
     constructor() ERC721A("Your Collection Name", "YCN") {}
 
 
-    modifier merkleProof(bytes32[] memory _proof, bytes32 _root) {
+    modifier merkleProof(bytes32[] calldata _proof, bytes32 _root) {
         require(
             MerkleProof.verify(_proof, _root, keccak256(abi.encodePacked(msg.sender)), "Address is not whitelisted!");
             _;
