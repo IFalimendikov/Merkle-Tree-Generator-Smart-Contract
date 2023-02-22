@@ -26,11 +26,10 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
     constructor() ERC721A("Test", "Test") {}
 
 
-    modifier merkleProof(bytes32[] calldata _proof, bytes32 _root) {
+    modifier isMerkleProof(bytes32[] calldata _proof, bytes32 _root) {
         require(
-            MerkleProof.verify(_proof, _root, keccak256(abi.encodePacked(msg.sender)), "Address is not whitelisted!");
+            MerkleProof.verify(_proof, _root, keccak256(abi.encodePacked(msg.sender))), "Address is not whitelisted!");
             _;
-        )
     }
     
     modifier mintActiveCompliance(uint256 _count) {
@@ -41,7 +40,7 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
 
     modifier supplyCompliance(uint256 _count) {
         require(
-            totalSupply() + _count <= maxSupply - reserve,
+            totalSupply() + _count <= supply - reserve,
             "Requested mint count exceeds the supply!"
         );
         _;
@@ -57,11 +56,10 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
     function mintWhitelist(bytes32[] calldata _merkleProof, uint256 _count)
         public
         payable
-        merkleProof(_merkleProof, merkleRoot)
+        isMerkleProof(_merkleProof, merkleRoot)
         nonReentrant
         mintActiveCompliance(_count)
         supplyCompliance(_count)
-        mintLimitCompliance(_count)
         mintPriceCompliance(_count)
     {   
         require(
@@ -69,6 +67,7 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         "You already minted your Swords!"
         );
         require(msg.sender == tx.origin, "contracts can't mint");
+        mintedNFTs[msg.sender] += _count;
         _safeMint(msg.sender, _count);
     }
 
@@ -123,8 +122,8 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         revealLive = true;
     }
 
-    function setMintLimit(uint256 _mintLimit) external onlyOwner {
-        mintLimit = _mintLimit;
+    function setMintLimit(uint256 _mints) external onlyOwner {
+        mints = _mints;
     }
 
     function setHiddenURI(string memory _hiddenURI) external onlyOwner {
