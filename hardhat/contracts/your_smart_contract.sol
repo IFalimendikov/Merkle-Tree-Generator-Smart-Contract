@@ -16,10 +16,10 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
     bool public revealLive = false;
     uint256 public supply = 777;
     uint256 public cost = 990000000000000;
-    uint256 public freeMints = 2;
+    uint256 public mints = 2;
     uint256 private reserve = 30;
 
-    mapping(address => uint256) mintedFreeNFTs;
+    mapping(address => uint256) mintedNFTs;
 
     bytes32 public merkleRoot;
 
@@ -52,24 +52,6 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-//////////////////////
-    function mintFree(
-        uint256 _count
-    )
-        external
-        nonReentrant
-        mintActiveCompliance(_count)
-        supplyCompliance(_count)
-    {       
-
-        require(msg.sender == tx.origin, "Contracts can't mint!");
-        require(
-            mintedFreeNFTs[msg.sender] + _count <= freeMints,
-            "You already minted your free Swords!"
-        );
-        mintedFreeNFTs[msg.sender] += _count;
-        _safeMint(msg.sender, _count);
-    }
 
 //////////////////////
     function mintWhitelist(bytes32[] calldata _merkleProof, uint256 _count)
@@ -81,7 +63,11 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         supplyCompliance(_count)
         mintLimitCompliance(_count)
         mintPriceCompliance(_count)
-    {
+    {   
+        require(
+        mintedNFTs[msg.sender] + _count <= mints,
+        "You already minted your Swords!"
+        );
         require(msg.sender == tx.origin, "contracts can't mint");
         _safeMint(msg.sender, _count);
     }
