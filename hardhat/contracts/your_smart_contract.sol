@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
+contract Test is ERC721A, Ownable, ReentrancyGuard {
     using Strings for uint256;
 
     string private baseURI;
@@ -14,15 +14,16 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
     string public hiddenURI;
     bool public mintActive = false;
     bool public revealLive = false;
-    uint256 public maxSupply = /* Maximum supply of you NFT collection */;
-    uint256 public mintLimit = /* Maximum mint limit per 1 wallet */;
-    uint256 private reserve = /* Amount of NFTS reserved for the owner */;
-    uint256 private freeMints = /* Amount of free mints per wallet. Set 0 if you want all payable. */;
-    uint256 public cost = /* Cost of a 1 NFT in Wei */;
+    uint256 public supply = 777;
+    uint256 public cost = 990000000000000;
+    uint256 public freeMints = 2;
+    uint256 private reserve = 30;
+
+    mapping(address => uint256) mintedFreeNFTs;
 
     bytes32 public merkleRoot;
 
-    constructor() ERC721A("Your Collection Name", "YCN") {}
+    constructor() ERC721A("Test", "Test") {}
 
 
     modifier merkleProof(bytes32[] calldata _proof, bytes32 _root) {
@@ -37,13 +38,6 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-    modifier mintLimitCompliance(uint256 _count) {
-        require(
-            _numberMinted(msg.sender) + _count <= mintLimit,
-            "Requested mint amount too big!"
-        );
-        _;
-    }
 
     modifier supplyCompliance(uint256 _count) {
         require(
@@ -58,9 +52,6 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-    function setWhitelistMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
-        merkleRoot = _merkleRoot;
-    }
 //////////////////////
     function mintFree(
         uint256 _count
@@ -68,15 +59,15 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
         external
         nonReentrant
         mintActiveCompliance(_count)
-        mintLimitCompliance(_count)
+        supplyCompliance(_count)
     {       
 
         require(msg.sender == tx.origin, "Contracts can't mint!");
         require(
-            totalSupply() + _count <= freeMints,
-            "Requested mint count exceeds free mint supply!"
+            mintedFreeNFTs[msg.sender] + _count <= freeMints,
+            "You already minted your free Swords!"
         );
-
+        mintedFreeNFTs[msg.sender] += _count;
         _safeMint(msg.sender, _count);
     }
 
@@ -132,6 +123,10 @@ contract /* Your Contract Name */  is ERC721A, Ownable, ReentrancyGuard {
 
     function releaseReserve() external onlyOwner {
         reserve = 0;
+    }
+
+    function setWhitelistMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
+        merkleRoot = _merkleRoot;
     }
 
     function setMintActive(bool _mintActive) external onlyOwner {

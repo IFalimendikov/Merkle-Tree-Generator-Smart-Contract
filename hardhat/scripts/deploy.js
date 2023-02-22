@@ -1,13 +1,10 @@
 async function main() {
   // update the name here
-  const YourSmartContract = await ethers.getContractFactory("SampleNFT")
+  const YourSmartContract = await ethers.getContractFactory("YourSmartContract")
 
   // Start deployment, returning a promise that resolves to a contract object
-  const sampleNFT = await SampleNFT.deploy(
-    "https://gateway.pinata.cloud/ipfs/QmapKEPakiuEAzYP2UXP4RYHP8c4dBUdTb12SvcSAeafgm/", // baseURI include the /
-    "" // collectionURI
-  );
-  console.log("Contract deployed to address:", sampleNFT.address)
+  const yourSmartContract = await YourSmartContract.deploy();
+  console.log("Contract deployed to address:", yourSmartContract.address)
 }
 
 main()
