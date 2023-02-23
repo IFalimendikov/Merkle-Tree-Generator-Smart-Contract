@@ -23,7 +23,7 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
 
     bytes32 public merkleRoot;
 
-    constructor() ERC721A("Test", "Test") {}
+    constructor () ERC721A("Test", "Test") {}
 
 
     modifier isMerkleProof(bytes32[] calldata _proof, bytes32 _root) {
