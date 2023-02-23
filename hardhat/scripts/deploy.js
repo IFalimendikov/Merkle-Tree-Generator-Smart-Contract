@@ -1,10 +1,10 @@
 async function main() {
   // update the name here
-  const YourSmartContract = await ethers.getContractFactory("YourSmartContract")
+  const Test = await ethers.getContractFactory("Test")
 
   // Start deployment, returning a promise that resolves to a contract object
-  const yourSmartContract = await YourSmartContract.deploy();
-  console.log("Contract deployed to address:", yourSmartContract.address)
+  const test = await Test.deploy();
+  console.log("Contract deployed to address:", test.address)
 }
 
 main()
