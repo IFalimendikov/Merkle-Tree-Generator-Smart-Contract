@@ -4,7 +4,7 @@ require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
 const { GOERLI_API_URL, ROPSTEN_API_URL, POLYGON_API_URL, MUMBAI_API_URL, MAINNET_API_URL, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
 module.exports = {
-   solidity: "0.8.0",
+   solidity: "0.8.4",
    defaultNetwork: "goerli",
    networks: {
       hardhat: {},
