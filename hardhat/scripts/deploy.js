@@ -1,15 +1,17 @@
-async function main() {
-  // update the name here
-  const Test = await ethers.getContractFactory("Test")
+const hre = require("hardhat");
 
-  // Start deployment, returning a promise that resolves to a contract object
-  const test = await Test.deploy();
-  console.log("Contract deployed to address:", test.address)
+async function main() {
+  const Test = await hre.ethers.getContractFactory("Test");
+  const test = await Test.deploy()
+
+  await test.deployed();
+
+  console.log("Test deployed to:", test.address);
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error)
-    process.exit(1)
-  })
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
