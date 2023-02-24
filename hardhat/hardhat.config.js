@@ -5,7 +5,6 @@ require("@nomiclabs/hardhat-etherscan");
 const { REACT_APP_GOERLI_RPC_URL, REACT_APP_MAINNET_RPC_URL, REACT_APP_PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
 module.exports = {
    solidity: "0.8.4",
-   defaultNetwork: "goerli",
    networks: {
       hardhat: {},
       goerli: {
