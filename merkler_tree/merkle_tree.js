@@ -9,4 +9,5 @@ const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true});
 
 const rootHash = merkleTree.getRoot();
 
+console.log(`Root is\n`, rootHash.toString("hex"));
 console.log(`Merkle Tree\n`, merkleTree.toString());
