@@ -11,7 +11,7 @@ const NFT_ADDRESS = process.env.NEXT_PUBLIC_NFT_ADDRESS;
 const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT;
 
 const web3 = new Web3(Web3.givenProvider)
-const contractABI = require("./data/Test.json");
+const contractABI = require("/data/SampleNFT.json");
 
 const acceptedChains = ENVIRONMENT === 'development' ? [1, 3, 4, 5, 42] : [1, 2];
 
