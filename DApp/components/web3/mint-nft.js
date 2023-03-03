@@ -43,35 +43,6 @@ const MintNFT = () => {
   }, [account])
 
 
-  let giftProof = [];
-  let giftValid = false;
-  const giftRes = useSWR(active && account ? `/api/giftProof?address=${account}` : null, {
-    fetcher, revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false });
-  if (!giftRes.error && giftRes.data) {
-    const { proof, valid } = giftRes.data;
-    giftProof = proof;
-    giftValid = valid;
-  }
-
-  useEffect(() => {
-    if (!active || !giftValid) {
-      setGiftClaimable(NOT_CLAIMABLE);
-      return;
-    } else if (alreadyClaimed) {
-      setGiftClaimable(ALREADY_CLAIMED);
-      return;
-    }
-    async function validateClaim() {
-      sampleNFT.methods.mintGift(giftProof).call({ from: account }).then(() => {
-        setGiftClaimable(CLAIMABLE);
-      }).catch((err) => {
-        if (err.toString().includes('claimed')) { setGiftClaimable(ALREADY_CLAIMED)}
-        else { setGiftClaimable(NOT_CLAIMABLE) }
-      });
-    }
-    validateClaim();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [giftProof])
 
   let whitelistProof = [];
   let whitelistValid = false;
