@@ -24,25 +24,10 @@ export const walletConnect = new WalletConnectConnector({
 });
 
 export const walletlink = new WalletLinkConnector({
-  appName: 'NFT Minting Scaffold',
+  appName: 'NFT Test',
   supportedChainIds: acceptedChains,
 })
 
-export const mintGift = async (account, proof) => {
-  console.log('minting gift...');
-  const result = sampleNFT.methods.mintGift(proof).send({ from: account }).then((result) => {
-      return {
-        success: true,
-        status: `✅ Check out your transaction on Etherscan: https://etherscan.io/tx/` + result
-        };
-  }).catch((err) => {
-    return {
-      success: false,
-      status: "😥 Something went wrong: " + err.message
-      }
-  });
-  return result;
-};
 
 export const mintWhitelist = async (account, proof) => {
   console.log('minting whitelist...');
@@ -117,4 +102,3 @@ export const useENSName = (library, address) => {
   return ENSName;
 }
 
-export default function blank() { return <></>}

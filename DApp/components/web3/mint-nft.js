@@ -1,7 +1,7 @@
 import { Grid, Stack } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
-import { mintGift, mintPublic, mintWhitelist, sampleNFT } from '@pages/utils/_web3';
+import { mintPublic, mintWhitelist, sampleNFT } from '@pages/utils/_web3';
 import MintNFTCard from './mint-nft-card';
 import useSWR from 'swr';
 import Web3 from 'web3';
@@ -76,12 +76,6 @@ const MintNFT = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [whitelistProof])
 
-
-  const onMintGift = async () => {
-    const { success, status } = await mintGift(account, giftProof);
-    console.log(status);
-    setGiftMintStatus(success);
-  };
 
   const onMintWhitelist = async () => {
     const { success, status } = await mintWhitelist(account, whitelistProof);
