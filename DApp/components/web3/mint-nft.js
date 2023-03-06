@@ -16,11 +16,9 @@ const MintNFT = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { active, account, chainId } = useWeb3React();
 
-  const [giftClaimable, setGiftClaimable] = useState(NOT_CLAIMABLE);
   const [whitelistClaimable, setWhitelistClaimable] = useState(NOT_CLAIMABLE);
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
 
-  const [giftMintStatus, setGiftMintStatus] = useState();
   const [whitelistMintStatus, setWhitelistMintStatus] = useState();
   const [publicMintStatus, setPublicMintStatus] = useState();
 
@@ -94,15 +92,7 @@ const MintNFT = () => {
       <Stack id="demo">
         <h2>Mint an NFT</h2>
         <Grid container spacing={3} justifyContent="center" alignItems="center">
-          <Grid item>
-            <MintNFTCard
-              title={'Gift Mint'}
-              description={'Mint this sample NFT to the connected wallet. Must be on gift whitelist.'}
-              canMint={giftClaimable}
-              mintStatus={giftMintStatus}
-              action={onMintGift}
-            />
-          </Grid>
+
           <Grid item>
             <MintNFTCard
               title={'Whitelist Mint'}
