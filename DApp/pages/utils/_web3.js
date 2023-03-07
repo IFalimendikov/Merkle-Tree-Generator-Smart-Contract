@@ -29,11 +29,11 @@ export const walletlink = new WalletLinkConnector({
 })
 
 
-export const mintWhitelist = async (account, proof) => {
+export const mintWhitelist = async (account, proof, numberOfTokens) => {
   console.log('minting whitelist...');
-  const amount = '0.01';
-    const amountToWei = web3.utils.toWei(amount, 'ether');
-  const result = sampleNFT.methods.mintWhitelist(proof).send({ from: account, value: amountToWei }).then((result) => {
+  const amount = (numberOfTokens * 0.00099).toString();
+  const amountToWei = web3.utils.toWei(amount, 'ether');
+  const result = sampleNFT.methods.mintWhitelist(proof, numberOfTokens).send({ from: account, value: amountToWei }).then((result) => {
     console.log(`✅ Check out your transaction on Etherscan: https://etherscan.io/tx/` + result);
       return {
         success: true,
@@ -53,9 +53,9 @@ export const mintWhitelist = async (account, proof) => {
 
   export const mintPublic = async (account, numberOfTokens) => {
     console.log('minting publicMint...');
-    const amount = (numberOfTokens * 0.02).toString();
+    const amount = (numberOfTokens * 0.00099).toString();
     const amountToWei = web3.utils.toWei(amount, 'ether');
-    const result = sampleNFT.methods.publicMint(numberOfTokens).send({ from: account, value: amountToWei }).then((result) => {
+    const result = sampleNFT.methods.mintPublic(numberOfTokens).send({ from: account, value: amountToWei }).then((result) => {
       console.log(`✅ Check out your transaction on Etherscan: https://etherscan.io/tx/` + result);
         return {
           success: true,

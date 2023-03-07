@@ -76,7 +76,7 @@ const MintNFT = () => {
 
 
   const onMintWhitelist = async () => {
-    const { success, status } = await mintWhitelist(account, whitelistProof);
+    const { success, status } = await mintWhitelist(account, whitelistProof, numToMint);
     console.log(status);
     setWhitelistMintStatus(success);
   };
