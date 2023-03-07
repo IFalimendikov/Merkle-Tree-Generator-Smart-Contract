@@ -12,31 +12,44 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
     string private baseURI;
     string public baseExtension = ".json";
     string public hiddenURI;
-    bool public mintActive = false;
+    bool public wlMintActive = false;
+    bool public publicMintActive = false;
     bool public revealLive = false;
     uint256 public supply = 777;
     uint256 public cost = 990000000000000;
+    uint256 public costWl = 990000000000000;
     uint256 public mints = 2;
+    uint256 public mintsWl = 2;
     uint256 private reserve = 30;
 
-    mapping(address => uint256) mintedNFTs;
+    mapping(address => uint256) mintedWls;
+    mapping(address => uint256) minted;
 
     bytes32 public merkleRoot;
 
-    constructor () ERC721A("Test", "Test") {}
-
+    constructor() ERC721A("Test", "Test") {}
 
     modifier isMerkleProof(bytes32[] calldata _proof, bytes32 _root) {
         require(
-            MerkleProof.verify(_proof, _root, keccak256(abi.encodePacked(msg.sender))), "Address is not whitelisted!");
-            _;
-    }
-    
-    modifier mintActiveCompliance(uint256 _count) {
-        require(mintActive, "Mint is not active!");
+            MerkleProof.verify(
+                _proof,
+                _root,
+                keccak256(abi.encodePacked(msg.sender))
+            ),
+            "Address is not whitelisted!"
+        );
         _;
     }
 
+    modifier mintActiveCompliance(uint256 _count) {
+        require(publicMintActive, "Mint is not active!");
+        _;
+    }
+
+    modifier mintWlActiveCompliance(uint256 _count) {
+        require(wlMintActive, "Mint is not active!");
+        _;
+    }
 
     modifier supplyCompliance(uint256 _count) {
         require(
@@ -46,31 +59,50 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         _;
     }
 
-    modifier mintPriceCompliance(uint256 _count) {
-        require(msg.value >= cost * _count, "Not enough ETH to mint!");
-        _;
-    }
-
-
-//////////////////////
-    function mintWhitelist(bytes32[] calldata _merkleProof, uint256 _count)
-        public
+    //////////////////////
+    function mintPublic(
+        uint256 _count
+    )
+        external
         payable
-        isMerkleProof(_merkleProof, merkleRoot)
         nonReentrant
         mintActiveCompliance(_count)
         supplyCompliance(_count)
-        mintPriceCompliance(_count)
-    {   
+    {
+        require(msg.sender == tx.origin, "Contracts can't mint!");
         require(
-        mintedNFTs[msg.sender] + _count <= mints,
-        "You already minted your Swords!"
+            minted[msg.sender] + _count <= mints,
+            "You already minted public!"
         );
-        require(msg.sender == tx.origin, "contracts can't mint");
-        mintedNFTs[msg.sender] += _count;
+        require(msg.value >= cost * _count, "Not enough ETH to mint!");
+        minted[msg.sender] += _count;
         _safeMint(msg.sender, _count);
     }
 
+    //////////////////////
+    function mintWhitelist(
+        bytes32[] calldata _merkleProof,
+        uint256 _count
+    )
+        external
+        payable
+        isMerkleProof(_merkleProof, merkleRoot)
+        nonReentrant
+        mintWlActiveCompliance(_count)
+        supplyCompliance(_count)
+    {
+        require(msg.sender == tx.origin, "contracts can't mint");
+        require(
+            mintedWls[msg.sender] + _count <= mintsWl,
+            "You already minted WL!"
+        );
+        require(msg.value >= costWl * _count, "Not enough ETH to mint!");
+
+        mintedWls[msg.sender] += _count;
+        _safeMint(msg.sender, _count);
+    }
+
+    //////////////////////
     function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
     }
@@ -79,19 +111,29 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         return 1;
     }
 
-    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+    function tokenURI(
+        uint256 _tokenId
+    ) public view virtual override returns (string memory) {
         require(
             _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
 
-        if(revealLive == false) {
+        if (revealLive == false) {
             return hiddenURI;
         }
 
         string memory currentBaseURI = _baseURI();
         return
-            bytes(currentBaseURI).length > 0 ? string(abi.encodePacked(currentBaseURI,_tokenId.toString(),baseExtension)): "";
+            bytes(currentBaseURI).length > 0
+                ? string(
+                    abi.encodePacked(
+                        currentBaseURI,
+                        _tokenId.toString(),
+                        baseExtension
+                    )
+                )
+                : "";
     }
 
     function reserveTokens(
@@ -106,6 +148,8 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         reserve = reserve - _count;
     }
 
+    //////////////////////
+
     function releaseReserve() external onlyOwner {
         reserve = 0;
     }
@@ -114,8 +158,12 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         merkleRoot = _merkleRoot;
     }
 
-    function setMintActive(bool _mintActive) external onlyOwner {
-        mintActive = _mintActive;
+    function setMintActive(bool _publicMintActive) external onlyOwner {
+        publicMintActive = _publicMintActive;
+    }
+
+    function seWlMintActive(bool _wlMintActive) external onlyOwner {
+        wlMintActive = _wlMintActive;
     }
 
     function setReveal() public onlyOwner {
@@ -126,8 +174,12 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         mints = _mints;
     }
 
+    function setWlMintLimit(uint256 _mintsWl) external onlyOwner {
+        mintsWl = _mintsWl;
+    }
+
     function setHiddenURI(string memory _hiddenURI) external onlyOwner {
-            hiddenURI = _hiddenURI;
+        hiddenURI = _hiddenURI;
     }
 
     function setBaseURI(string memory uri) external onlyOwner {
@@ -138,6 +190,10 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         cost = _cost;
     }
 
+    function setCostWl(uint256 _costWl) public onlyOwner {
+        costWl = _costWl;
+    }
+
     function withdraw() public payable onlyOwner nonReentrant {
         (bool success, ) = payable(owner()).call{value: address(this).balance}(
             ""
@@ -145,7 +201,5 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
         require(success);
     }
 }
-
-
 
 //Ivan Falimendikov 2023
