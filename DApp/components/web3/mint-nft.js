@@ -8,7 +8,7 @@ import Web3 from 'web3';
 
 const NOT_CLAIMABLE = 0;
 const ALREADY_CLAIMED = 1;
-const CLAIMABLE = 2;
+const CLAIMABLE = 3;
 
 const MintNFT = () => {
   const web3 = new Web3(Web3.givenProvider)
