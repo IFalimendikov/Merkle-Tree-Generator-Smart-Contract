@@ -49,7 +49,7 @@ const MintNFT = () => {
   if (!whitelistRes.error && whitelistRes.data) {
     const { proof, valid } = whitelistRes.data;
     whitelistProof = proof;
-    whitelistValid = valid;
+    whitelistValid = valid; whitelistValid = valid; whitelistValid
   }
 
   useEffect(() => {
