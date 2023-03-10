@@ -17,7 +17,7 @@ const MintNFT = () => {
   const { active, account, chainId } = useWeb3React();
 
   const [whitelistClaimable, setWhitelistClaimable] = useState(NOT_CLAIMABLE);
-  const [alreadyClaimed, setAlreadyClaimed] = useState(false);
+  const [claimedAmount, setClaimedAmount] = useState(0));
 
   const [whitelistMintStatus, setWhitelistMintStatus] = useState();
   const [publicMintStatus, setPublicMintStatus] = useState();
@@ -26,14 +26,14 @@ const MintNFT = () => {
 
   useEffect(() => {
     if (!active || !account) {
-      setAlreadyClaimed(false);
+      setClaimedAmount(0);
       return;
     }
     async function checkIfClaimed() {
-      sampleNFT.methods.claimed(account).call({ from: account }).then((result) => {
-        setAlreadyClaimed(result);
+      sampleNFT.methods.mintedWls(account).call({ from: account }).then((result) => {
+        setClaimedAmount(result);
       }).catch((err) => {
-        setAlreadyClaimed(false);
+        setAlreadyClaimed(0);
       });
     }
     checkIfClaimed();
@@ -49,14 +49,14 @@ const MintNFT = () => {
   if (!whitelistRes.error && whitelistRes.data) {
     const { proof, valid } = whitelistRes.data;
     whitelistProof = proof;
-    whitelistValid = valid; whitelistValid = valid; whitelistValid
+    whitelistValid = valid; 
   }
 
   useEffect(() => {
     if (!active || !whitelistValid) {
       setWhitelistClaimable(NOT_CLAIMABLE);
       return;
-    } else if (alreadyClaimed) {
+    } else if (alreadyClaimed == 2) {
       setWhitelistClaimable(ALREADY_CLAIMED);
       return;
     }
