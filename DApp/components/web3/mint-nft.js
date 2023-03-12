@@ -17,7 +17,7 @@ const MintNFT = () => {
   const { active, account, chainId } = useWeb3React();
 
   const [whitelistClaimable, setWhitelistClaimable] = useState(NOT_CLAIMABLE);
-  const [claimedAmount, setClaimedAmount] = useState(0));
+  const [claimedAmount, setClaimedAmount] = useState(0);
 
   const [whitelistMintStatus, setWhitelistMintStatus] = useState();
   const [publicMintStatus, setPublicMintStatus] = useState();
@@ -61,7 +61,7 @@ const MintNFT = () => {
       return;
     }
     async function validateClaim() {
-      const amount = '0.01';
+      const amount = '0.0099';
       const amountToWei = web3.utils.toWei(amount, 'ether');
       sampleNFT.methods.mintWhitelist(whitelistProof).call({ from: account, value: amountToWei }).then(() => {
         setWhitelistClaimable(CLAIMABLE);
