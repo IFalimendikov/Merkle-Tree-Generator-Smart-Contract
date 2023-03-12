@@ -8,7 +8,7 @@ import Web3 from 'web3';
 
 const NOT_CLAIMABLE = 0;
 const ALREADY_CLAIMED = 1;
-const CLAIMABLE = 3;
+const CLAIMABLE = 2;
 
 const MintNFT = () => {
   const web3 = new Web3(Web3.givenProvider)
@@ -33,7 +33,7 @@ const MintNFT = () => {
       sampleNFT.methods.mintedWls(account).call({ from: account }).then((result) => {
         setClaimedAmount(result);
       }).catch((err) => {
-        setAlreadyClaimed(0);
+        setClaimedAmount(0);
       });
     }
     checkIfClaimed();
@@ -56,14 +56,14 @@ const MintNFT = () => {
     if (!active || !whitelistValid) {
       setWhitelistClaimable(NOT_CLAIMABLE);
       return;
-    } else if (alreadyClaimed == 2) {
+    } else if (claimedAmount == 2) {
       setWhitelistClaimable(ALREADY_CLAIMED);
       return;
     }
     async function validateClaim() {
-      const amount = '0.0099';
+      const amount = (claimedAmount * 0.00099).toString();
       const amountToWei = web3.utils.toWei(amount, 'ether');
-      sampleNFT.methods.mintWhitelist(whitelistProof).call({ from: account, value: amountToWei }).then(() => {
+      sampleNFT.methods.mintWhitelist(whitelistProof, claimedAmount).call({ from: account, value: amountToWei }).then(() => {
         setWhitelistClaimable(CLAIMABLE);
       }).catch((err) => {
         if (err.toString().includes('claimed')) { setWhitelistClaimable(ALREADY_CLAIMED)}
