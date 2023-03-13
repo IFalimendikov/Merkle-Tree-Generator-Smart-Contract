@@ -16,8 +16,8 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
     bool public publicMintActive = false;
     bool public revealLive = false;
     uint256 public supply = 777;
-    uint256 public cost = 990000000000000;
-    uint256 public costWl = 990000000000000;
+    uint256 public cost = 10000000000000000;
+    uint256 public costWl = 10000000000000000;
     uint256 public mints = 2;
     uint256 public mintsWl = 2;
     uint256 private reserve = 30;
