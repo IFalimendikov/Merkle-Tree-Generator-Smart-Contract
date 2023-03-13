@@ -100,6 +100,8 @@ const MintNFT = () => {
               canMint={whitelistClaimable}
               mintStatus={whitelistMintStatus}
               action={onMintWhitelist}
+              showNumToMint={true}
+              setNumToMint={setNumToMint}
             />
           </Grid>
           <Grid item>

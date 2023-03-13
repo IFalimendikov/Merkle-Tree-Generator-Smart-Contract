@@ -22,8 +22,8 @@ contract Test is ERC721A, Ownable, ReentrancyGuard {
     uint256 public mintsWl = 2;
     uint256 private reserve = 30;
 
-    mapping(address => uint256) mintedWls;
-    mapping(address => uint256) minted;
+    mapping(address => uint256) public mintedWls;
+    mapping(address => uint256) public minted;
 
     bytes32 public merkleRoot;
 
