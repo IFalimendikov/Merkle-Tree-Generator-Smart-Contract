@@ -19,10 +19,17 @@ const MintNFT = () => {
   const [whitelistClaimable, setWhitelistClaimable] = useState(NOT_CLAIMABLE);
   const [claimedAmount, setClaimedAmount] = useState(0);
 
+  const [mintWlPhase, setMintWlPhase] = useState(false);
+  const [mintPublicPhase, setMintPublicPhase] = useState(false);
+
   const [whitelistMintStatus, setWhitelistMintStatus] = useState();
   const [publicMintStatus, setPublicMintStatus] = useState();
+  
 
   const [numToMint, setNumToMint] = useState(2);
+
+
+  
 
   useEffect(() => {
     if (!active || !account) {
@@ -39,6 +46,32 @@ const MintNFT = () => {
     checkIfClaimed();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
+/////////////////////////////////////////////////////
+  useEffect(() => {
+    
+    async function checkWlMintPhase() {
+      sampleNFT.methods.wlMintActive().call({ from: account }).then((result) => {
+        setMintWlPhase(result);
+      }).catch((err) => {
+        setMintWlPhase(false);
+      });
+    }
+    checkWlMintPhase();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account])
+/////////////////////////////////////////////////////
+useEffect(() => {
+    
+  async function checkPublicMintPhase() {
+    sampleNFT.methods.publicMintActive().call({ from: account }).then((result) => {
+      setMintPublicPhase(result);
+    }).catch((err) => {
+      setMintPublicPhase(false);
+    });
+  }
+  checkPublicMintPhase();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [account])
 
 
 
@@ -87,38 +120,65 @@ const MintNFT = () => {
     setPublicMintStatus(success);
   };
 
-  return (
+
+
+  if(mintWlPhase == true) {
+    return (
+      <>
+        <Stack id="demo">
+          <h2>Mint an NFT</h2>
+          <Grid container spacing={3} justifyContent="center" alignItems="center">
+            <Grid item>
+              <MintNFTCard
+                title={'Whitelist Mint'}
+                description={'Mint this sample NFT to the connected wallet. Must be on whitelist. Cost: 0.01 ETH'}
+                canMint={whitelistClaimable}
+                mintStatus={whitelistMintStatus}
+                action={onMintWhitelist}
+                showNumToMint={true}
+                setNumToMint={setNumToMint}
+              />
+            </Grid>
+          </Grid>
+        </Stack>
+      </>
+    );
+  } else if (mintPublicPhase == true) {
+    return (
+      <>
+        <Stack id="demo">
+          <h2>Mint an NFT</h2>
+          <Grid container spacing={3} justifyContent="center" alignItems="center">
+            <Grid item>
+              <MintNFTCard
+                title={'Public Mint'}
+                description={'Mint this sample NFT to the connected wallet. Open for any wallet to mint. Cost: 0.02 ETH'}
+                canMint={active}
+                mintStatus={publicMintStatus}
+                showNumToMint={true}
+                setNumToMint={setNumToMint}
+                action={onPublicMint}
+              />
+            </Grid>
+          </Grid>
+        </Stack>
+      </>
+    );
+  } else { return (
     <>
+    
       <Stack id="demo">
         <h2>Mint an NFT</h2>
         <Grid container spacing={3} justifyContent="center" alignItems="center">
 
           <Grid item>
-            <MintNFTCard
-              title={'Whitelist Mint'}
-              description={'Mint this sample NFT to the connected wallet. Must be on whitelist. Cost: 0.01 ETH'}
-              canMint={whitelistClaimable}
-              mintStatus={whitelistMintStatus}
-              action={onMintWhitelist}
-              showNumToMint={true}
-              setNumToMint={setNumToMint}
-            />
-          </Grid>
-          <Grid item>
-            <MintNFTCard
-              title={'Public Mint'}
-              description={'Mint this sample NFT to the connected wallet. Open for any wallet to mint. Cost: 0.02 ETH'}
-              canMint={active}
-              mintStatus={publicMintStatus}
-              showNumToMint={true}
-              setNumToMint={setNumToMint}
-              action={onPublicMint}
-            />
+            <h1> Mint is incomming!</h1>
+            <h2>  {whitelistValid ? `You have ${2 - claimedAmount} whitelist mints!`  : `You are not on the whitelist!`} </h2>
           </Grid>
         </Grid>
       </Stack>
     </>
-  );
+  ); }
 }
 
 export default MintNFT;
